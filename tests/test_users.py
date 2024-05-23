@@ -50,6 +50,7 @@ def update_user(client, password="password"):
 
 def check_response(response, expected_status_code):
     assert response.status_code == expected_status_code
+    assert response.json["id"] == 1
     assert response.json["username"] == "test_user"
 
 
@@ -104,12 +105,13 @@ def test_login_existing_user(client):
     A successful login should yield a valid JWT token and 200 response code.
     """
     response = register_user(client)
+    user_id = response.json["id"]
     check_response(response, HTTPStatus.CREATED)
     response = login_user(client)
     assert response.status_code == HTTPStatus.OK
     with client.application.app_context():
         decoded_token = decode_token(response.json["access_token"])
-        assert decoded_token["sub"] == "test_user"
+        assert decoded_token["sub"] == user_id
 
 
 def test_invalid_login_user(client):
@@ -181,6 +183,7 @@ def test_update_user(client):
     A successful update user request should yield the 200 response code and change user's password.
     """
     response = register_user(client)
+    user_id = response.json["id"]
     check_response(response, HTTPStatus.CREATED)
     response = update_user(client)
     check_response(response, HTTPStatus.OK)
@@ -190,7 +193,7 @@ def test_update_user(client):
     assert response.status_code == HTTPStatus.OK
     with client.application.app_context():
         decoded_token = decode_token(response.json["access_token"])
-        assert decoded_token["sub"] == "test_user"
+        assert decoded_token["sub"] == user_id
 
 
 def test_invalid_update_user(client):

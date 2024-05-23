@@ -3,6 +3,7 @@ from marshmallow.validate import Length
 
 
 class UserSchema(Schema):
+    id = fields.Int(dump_only=True)
     username = fields.Str(required=True, validate=Length(max=128))
     password = fields.Str(required=True, load_only=True, validate=Length(max=128))
 
