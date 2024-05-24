@@ -46,4 +46,3 @@ docker build -t users-image .
 ```sh
 docker run --env-file=.env -d -p 8000:8000 users-image
 ```
-
