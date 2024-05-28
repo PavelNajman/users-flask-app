@@ -21,7 +21,7 @@ class User(MethodView):
         user = UserModel.find_by_username(user_data["username"])
         if not user or not check_password_hash(user.password, user_data["password"]):
             abort(HTTPStatus.UNAUTHORIZED, "Invalid credentials.")
-        return {"access_token": create_access_token(identity=user.id)}, HTTPStatus.OK
+        return {"access_token": create_access_token(identity=user.id, fresh=True)}, HTTPStatus.OK
 
     @blp.arguments(UserUpdateSchema)
     @blp.response(HTTPStatus.OK, UserSchema)
