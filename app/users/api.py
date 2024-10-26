@@ -20,7 +20,7 @@ class User(MethodView):
         """
         user = UserModel.find_by_username(user_data["username"])
         if not user or not check_password_hash(user.password, user_data["password"]):
-            abort(HTTPStatus.UNAUTHORIZED, "Invalid credentials.")
+            abort(HTTPStatus.UNAUTHORIZED, message="Invalid credentials.")
         return {"access_token": create_access_token(identity=user.id, fresh=True)}, HTTPStatus.OK
 
     @blp.arguments(UserUpdateSchema)
@@ -31,7 +31,7 @@ class User(MethodView):
         """
         user = UserModel.find_by_username(user_data["username"])
         if not user or not check_password_hash(user.password, user_data["password"]):
-            abort(HTTPStatus.UNAUTHORIZED, "Invalid credentials.")
+            abort(HTTPStatus.UNAUTHORIZED, message="Invalid credentials.")
         user.password = generate_password_hash(user_data["new_password"])
         try:
             user.insert_to_db()
@@ -50,7 +50,7 @@ class User(MethodView):
         """
         user = UserModel.find_by_username(user_data["username"])
         if not user or not check_password_hash(user.password, user_data["password"]):
-            abort(HTTPStatus.UNAUTHORIZED, "Invalid credentials.")
+            abort(HTTPStatus.UNAUTHORIZED, message="Invalid credentials.")
         try:
             user.delete_from_db()
         except SQLAlchemyError:
@@ -70,7 +70,7 @@ class UserRegister(MethodView):
         Register new user.
         """
         if UserModel.find_by_username(user_data["username"]):
-            abort(HTTPStatus.BAD_REQUEST, "A user with that username already exists")
+            abort(HTTPStatus.BAD_REQUEST, message="A user with that username already exists")
         user = UserModel(
             username=user_data["username"],
             password=generate_password_hash(user_data["password"]),
