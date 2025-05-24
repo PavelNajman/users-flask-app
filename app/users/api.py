@@ -38,7 +38,7 @@ class User(MethodView):
         except SQLAlchemyError:
             abort(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
-                message="An error occured while updating the user.",
+                message="An error occurred while updating the user.",
             )
         return user
 
@@ -56,7 +56,7 @@ class User(MethodView):
         except SQLAlchemyError:
             abort(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
-                message="An error occured while deleting the user.",
+                message="An error occurred while deleting the user.",
             )
         return user
 
@@ -80,6 +80,6 @@ class UserRegister(MethodView):
         except SQLAlchemyError:
             abort(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
-                message="An error occured while creating the user.",
+                message="An error occurred while creating the user.",
             )
         return user
