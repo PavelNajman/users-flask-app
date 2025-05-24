@@ -1,6 +1,6 @@
 # Users
 
-Users is a Flask application that enables users to register, login and receive JWT tokenis using a simple API. The user data is stored in a database and consists of a username and a password.
+Users is a Flask application that enables users to register, login and receive JWT tokens using a simple API. The user data is stored in a database and consists of a username and a password.
 
 ## Development and testing
 
