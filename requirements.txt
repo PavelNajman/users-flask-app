@@ -11,4 +11,3 @@ pytest
 
 # production
 gunicorn
-mariadb
