@@ -29,7 +29,7 @@ def register_user(client):
 
 
 def login_user(client, password="password"):
-    return client.post("/user", json={"username": "test_user", "password": password})
+    return client.post("/user/login", json={"username": "test_user", "password": password})
 
 
 def delete_user(client, password="password"):
@@ -117,7 +117,7 @@ def test_invalid_login_user(client):
     """
     A login user request with invalid data yields 422 error.
     """
-    response = client.post("/user", json={})
+    response = client.post("/user/login", json={})
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
 

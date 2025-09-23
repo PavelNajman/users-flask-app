@@ -10,31 +10,34 @@ from .schemas import UserSchema, UserUpdateSchema
 
 blp = Blueprint("Users", "users", description="Operations on users.")
 
+def authenticate_user(username, password):
+    """Helper method to authenticate a user."""
+    user = UserModel.find_by_username(username)
+    if not user or not check_password_hash(user.password, password):
+        abort(HTTPStatus.UNAUTHORIZED, message="Invalid credentials.")
+    return user
 
-@blp.route("/user")
-class User(MethodView):
-    def _authenticate_user(self, username, password):
-        """Helper method to authenticate a user."""
-        user = UserModel.find_by_username(username)
-        if not user or not check_password_hash(user.password, password):
-            abort(HTTPStatus.UNAUTHORIZED, message="Invalid credentials.")
-        return user
 
+@blp.route("/user/login")
+class UserLogin(MethodView):
     @blp.arguments(UserSchema)
     def post(self, user_data):
         """
         Login and obtain JWT.
         """
-        user = self._authenticate_user(user_data["username"], user_data["password"])
+        user = authenticate_user(user_data["username"], user_data["password"])
         return {"access_token": create_access_token(identity=str(user.id), fresh=True)}, HTTPStatus.OK
 
+
+@blp.route("/user")
+class User(MethodView):
     @blp.arguments(UserUpdateSchema)
     @blp.response(HTTPStatus.OK, UserSchema)
     def put(self, user_data):
         """
         Update user password.
         """
-        user = self._authenticate_user(user_data["username"], user_data["password"])
+        user = authenticate_user(user_data["username"], user_data["password"])
         user.password = generate_password_hash(user_data["new_password"])
         try:
             user.insert_to_db()
@@ -51,7 +54,7 @@ class User(MethodView):
         """
         Delete user.
         """
-        user = self._authenticate_user(user_data["username"], user_data["password"])
+        user = authenticate_user(user_data["username"], user_data["password"])
         try:
             user.delete_from_db()
         except SQLAlchemyError:

@@ -54,7 +54,7 @@ The API provides the following endpoints for user management:
 | Method | Endpoint        | Description                           |
 |--------|----------------|---------------------------------------|
 | POST   | /user/register | Register a new user                   |
-| POST   | /user          | Login and obtain JWT access token     |
+| POST   | /user/login    | Login and obtain JWT access token     |
 | PUT    | /user          | Update user's password                |
 | DELETE | /user          | Delete user account                   |
 
@@ -95,7 +95,7 @@ curl -X POST http://localhost:8000/user/register \
 #### Login
 
 ```http
-POST /user
+POST /user/login
 ```
 
 **Request Body:**
@@ -118,7 +118,7 @@ POST /user
 **Curl Example:**
 
 ```bash
-curl -X POST http://localhost:8000/user \
+curl -X POST http://localhost:8000/user/login \
   -H "Content-Type: application/json" \
   -d '{"username": "testuser", "password": "testpass"}'
 ```
