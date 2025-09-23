@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=128), nullable=False),
     # Store only hashed passwords, never plaintext
-    sa.Column('password_hash', sa.String(length=128), nullable=False),
+    sa.Column('password', sa.String(length=128), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('username')
     )
