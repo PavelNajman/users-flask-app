@@ -46,3 +46,144 @@ docker build -t users-image .
 ```sh
 docker run --env-file=.env -d -p 8000:8000 users-image
 ```
+
+## API Documentation
+
+The API provides the following endpoints for user management:
+
+| Method | Endpoint        | Description                           |
+|--------|----------------|---------------------------------------|
+| POST   | /user/register | Register a new user                   |
+| POST   | /user          | Login and obtain JWT access token     |
+| PUT    | /user          | Update user's password                |
+| DELETE | /user          | Delete user account                   |
+
+### Endpoints
+
+#### Register a new user
+
+```http
+POST /user/register
+```
+
+**Request Body:**
+
+```json
+{
+    "username": "string",
+    "password": "string"
+}
+```
+
+**Response:** `201 Created`
+
+```json
+{
+    "id": "integer",
+    "username": "string"
+}
+```
+
+**Curl Example:**
+
+```bash
+curl -X POST http://localhost:8000/user/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "testpass"}'
+```
+
+#### Login
+
+```http
+POST /user
+```
+
+**Request Body:**
+
+```json
+{
+    "username": "string",
+    "password": "string"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+    "access_token": "string"
+}
+```
+
+**Curl Example:**
+
+```bash
+curl -X POST http://localhost:8000/user \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "testpass"}'
+```
+
+#### Update Password
+
+```http
+PUT /user
+```
+
+**Request Body:**
+
+```json
+{
+    "username": "string",
+    "password": "string",
+    "new_password": "string"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+    "id": "integer",
+    "username": "string"
+}
+```
+
+**Curl Example:**
+
+```bash
+curl -X PUT http://localhost:8000/user \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "testpass", "new_password": "newpass"}'
+```
+
+#### Delete User
+
+```http
+DELETE /user
+```
+
+**Request Body:**
+
+```json
+{
+    "username": "string",
+    "password": "string"
+}
+```
+
+**Response:** `200 OK`
+
+```json
+{
+    "id": "integer",
+    "username": "string"
+}
+```
+
+**Curl Example:**
+
+```bash
+curl -X DELETE http://localhost:8000/user \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "testpass"}'
+```
