@@ -110,7 +110,7 @@ def test_login_existing_user(client):
     assert response.status_code == HTTPStatus.OK
     with client.application.app_context():
         decoded_token = decode_token(response.json["access_token"])
-        assert decoded_token["sub"] == user_id
+        assert decoded_token["sub"] == str(user_id)
 
 
 def test_invalid_login_user(client):
@@ -192,7 +192,7 @@ def test_update_user(client):
     assert response.status_code == HTTPStatus.OK
     with client.application.app_context():
         decoded_token = decode_token(response.json["access_token"])
-        assert decoded_token["sub"] == user_id
+        assert decoded_token["sub"] == str(user_id)
 
 
 def test_invalid_update_user(client):
