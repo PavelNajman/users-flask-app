@@ -26,7 +26,7 @@ class User(MethodView):
         Login and obtain JWT.
         """
         user = self._authenticate_user(user_data["username"], user_data["password"])
-        return {"access_token": create_access_token(identity=user.id, fresh=True)}, HTTPStatus.OK
+        return {"access_token": create_access_token(identity=str(user.id), fresh=True)}, HTTPStatus.OK
 
     @blp.arguments(UserUpdateSchema)
     @blp.response(HTTPStatus.OK, UserSchema)
