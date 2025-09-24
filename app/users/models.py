@@ -23,3 +23,18 @@ class UserModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+
+class Blocklist(db.Model):
+    __tablename__ = "blocklist"
+
+    jti = db.Column(db.String(36), primary_key=True)
+    expires = db.Column(db.DateTime, nullable=False)
+
+    @classmethod
+    def find_by_jti(cls, jti):
+        return cls.query.filter_by(jti=jti).first()
+    
+    def insert_to_db(self):
+        db.session.add(self)
+        db.session.commit()

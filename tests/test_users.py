@@ -201,3 +201,29 @@ def test_invalid_update_user(client):
     """
     response = client.put("/user", json={})
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+
+def test_logout_user(client):
+    """Test user logout"""
+    # Register and login
+    register_user(client)
+    response = login_user(client)
+    assert response.status_code == HTTPStatus.OK
+    
+    # Get the access token
+    access_token = response.json["access_token"]
+    
+    # Logout
+    response = client.post(
+        "/user/logout",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert response.status_code == HTTPStatus.OK
+    assert response.json["msg"] == "Successfully logged out"
+    
+    # Try to use the token again
+    response = client.post(
+        "/user/logout",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert response.status_code == HTTPStatus.UNAUTHORIZED

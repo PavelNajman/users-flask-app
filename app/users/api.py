@@ -1,11 +1,12 @@
+from datetime import datetime
 from flask.views import MethodView
 from http import HTTPStatus
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt, jwt_required
 
-from .models import UserModel
+from .models import UserModel, Blocklist
 from .schemas import UserSchema, UserUpdateSchema
 
 blp = Blueprint("Users", "users", description="Operations on users.")
@@ -16,17 +17,6 @@ def authenticate_user(username, password):
     if not user or not check_password_hash(user.password, password):
         abort(HTTPStatus.UNAUTHORIZED, message="Invalid credentials.")
     return user
-
-
-@blp.route("/user/login")
-class UserLogin(MethodView):
-    @blp.arguments(UserSchema)
-    def post(self, user_data):
-        """
-        Login and obtain JWT.
-        """
-        user = authenticate_user(user_data["username"], user_data["password"])
-        return {"access_token": create_access_token(identity=str(user.id), fresh=True)}, HTTPStatus.OK
 
 
 @blp.route("/user")
@@ -87,3 +77,36 @@ class UserRegister(MethodView):
                 message="An error occurred while creating the user.",
             )
         return user
+
+
+@blp.route("/user/login")
+class UserLogin(MethodView):
+    @blp.arguments(UserSchema)
+    def post(self, user_data):
+        """
+        Login and obtain JWT.
+        """
+        user = authenticate_user(user_data["username"], user_data["password"])
+        return {"access_token": create_access_token(identity=str(user.id), fresh=True)}, HTTPStatus.OK
+
+
+@blp.route("/user/logout")
+class UserLogout(MethodView):
+    @jwt_required()
+    def post(self):
+        """
+        Logout user by adding JWT token to blocklist.
+        """
+        jwt = get_jwt()
+        jti = jwt["jti"]
+        expires = datetime.fromtimestamp(jwt["exp"])
+        
+        blocklist = Blocklist(jti=jti, expires=expires)
+        try:
+            blocklist.insert_to_db()
+        except SQLAlchemyError:
+            abort(
+                HTTPStatus.INTERNAL_SERVER_ERROR,
+                message="An error occurred while logging out.",
+            )
+        return {"msg": "Successfully logged out"}, HTTPStatus.OK
