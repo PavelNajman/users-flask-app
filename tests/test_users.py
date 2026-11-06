@@ -71,6 +71,7 @@ def test_register_existing_user(client):
     check_response(response, HTTPStatus.CREATED)
     response = register_user(client)
     assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json["message"] == "A user with that username already exists"
 
 
 def test_invalid_register_user(client):
@@ -219,7 +220,7 @@ def test_logout_user(client):
         headers={"Authorization": f"Bearer {access_token}"}
     )
     assert response.status_code == HTTPStatus.OK
-    assert response.json["msg"] == "Successfully logged out"
+    assert response.json["message"] == "Successfully logged out"
     
     # Try to use the token again
     response = client.post(

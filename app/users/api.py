@@ -109,4 +109,4 @@ class UserLogout(MethodView):
                 HTTPStatus.INTERNAL_SERVER_ERROR,
                 message="An error occurred while logging out.",
             )
-        return {"msg": "Successfully logged out"}, HTTPStatus.OK
+        return {"message": "Successfully logged out"}, HTTPStatus.OK
